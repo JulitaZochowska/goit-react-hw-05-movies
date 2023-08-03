@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/616.9b70fd1a.chunk.css","mappings":"AAAA,oCAEI,kBAAmB,CADnB,YAEJ,CAEA,kCACI,gBACJ","sources":["pages/MovieDetails.module.css"],"sourcesContent":[".movieContainer {\r\n    display: flex;\r\n    align-items: center;\r\n}\r\n\r\n.movieDetails {\r\n    margin-left: 20px;\r\n}"],"names":[],"sourceRoot":""}
