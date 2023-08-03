@@ -1,10 +1,10 @@
 import { Suspense } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { StyledLink, Header } from './CommonLayout.styled';
 
 export const CommonLayout = () => {
   return (
-    <div className='="container'>
+    <div className="container">
       <Header>
         <StyledLink to="/">Home</StyledLink>
         <StyledLink to="/movies">Movies</StyledLink>
