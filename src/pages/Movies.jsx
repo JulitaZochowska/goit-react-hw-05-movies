@@ -1,41 +1,45 @@
-import { useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
-import { getMovies } from 'utils';
+import { getMovies } from 'api/tmdb-api';
+import { useEffect, useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 
 export const Movies = () => {
-  const movies = getMovies(); //lista moviesow
-  const [searchParams, setSearchParams] = useSearchParams(); //Hook który nam ogarnia całe url
-  const movieName = searchParams.get('name') ?? ''; //chcę z url wziąć wartość name a jeeli jej nie ma tp pusty string
-  const filteredMovies = movies.filter(movie => {
-    const movieNameLowerCase = movieName.toLowerCase(); //to wszystko co wpisuję w inputa zamieniam na małą literę
-    return movie.name.toLowerCase().includes(movieNameLowerCase);
-  });
-  //jak wpisuję coś do inputa to chcę eby to się dodawało do searchParams, setSearchParams słuy eby to pakować do url
+  const [movies, setMovies] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query');
+  const location = useLocation();
+
   useEffect(() => {
-    if (location.state) {
-      setSearchParams(location.state);
+    if (!query) return;
+
+    async function fetchData() {
+      const movies = await getMovies(query);
+      setMovies(movies);
     }
-    [];
-  });
+    fetchData();
+  }, [query]);
 
-  const handleInput = name => {
-    //wpisuję coś do inputa i ma mi to ładować do setSearchParams
-    const params = name !== '' ? { name } : {}; //jeeli mój name jest rózny od pustego stringa to wrzucaj mi do paramsów i w tedy zwracamy name
-    //a jak pusty to nie dodaje do setSearchParams
-
-    setSearchParams(params);
+  const handleSubmit = e => {
+    e.preventDefault();
+    const form = e.currentTarget;
+    setSearchParams({ query: form.elements.query.value });
+    form.reset();
   };
+
   return (
     <div>
-      <input type="text" value="" onChange={e => handleInput(e.target.value)} />
-      <div className="product-wrapper">
-        {movies.map(el => (
-          <div className="product" key={el.id}>
-            <img src="" alt="" />
-            <p>{el.name}</p>
-          </div>
+      <form onSubmit={handleSubmit}>
+        <input type="text" name="query" />
+        <button type="submit">Search</button>
+      </form>
+      <ul>
+        {movies.map(movie => (
+          <li key={movie.id}>
+            <Link to={movie.id.toString()} state={{ from: location }}>
+              {movie.title}
+            </Link>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 };
